@@ -33,9 +33,9 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
   uint32_t rows = 0;
   uint32_t columns = 0;
   std::vector<double> matrix;
-  int wsize = ppc::util::GetNumProc();
+  int wsize = 0;
 
-  // MPI_Comm_size(MPI_COMM_WORLD, &wsize);
+  MPI_Comm_size(MPI_COMM_WORLD, &wsize);
 
   if (rank_ == 0) {
     rows = std::get<0>(GetInput());
