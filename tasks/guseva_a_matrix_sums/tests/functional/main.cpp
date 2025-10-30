@@ -84,10 +84,10 @@ TEST_P(GusevaARunFuncTestsProcesses, MatrixSumsByColumns) {
 const std::array<TestType, 10> kTestParam = {"test1", "test2", "test3", "test4", "test5",
                                              "test6", "test7", "test8", "test9", "test10"};
 
-const auto kTestTasksList = std::tuple_cat(ppc::util::AddFuncTask<guseva_a_matrix_sums::GusevaAMatrixSumsMPI, InType>(
-                                               kTestParam, PPC_SETTINGS_guseva_a_matrix_sums)/*,
+const auto kTestTasksList = std::tuple_cat(/*ppc::util::AddFuncTask<guseva_a_matrix_sums::GusevaAMatrixSumsMPI, InType>(
+                                               kTestParam, PPC_SETTINGS_guseva_a_matrix_sums),*/
                                            ppc::util::AddFuncTask<guseva_a_matrix_sums::GusevaAMatrixSumsSEQ, InType>(
-                                               kTestParam, PPC_SETTINGS_guseva_a_matrix_sums)*/);
+                                               kTestParam, PPC_SETTINGS_guseva_a_matrix_sums));
 
 const auto kGtestValues = ppc::util::ExpandToValues(kTestTasksList);
 
