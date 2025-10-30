@@ -8,8 +8,8 @@
 #include <string>
 
 #include "guseva_a_matrix_sums/common/include/common.hpp"
-#include "guseva_a_matrix_sums/mpi/include/ops_mpi.hpp"
-// #include "guseva_a_matrix_sums/seq/include/ops_seq.hpp"
+// #include "guseva_a_matrix_sums/mpi/include/ops_mpi.hpp"
+#include "guseva_a_matrix_sums/seq/include/ops_seq.hpp"
 #include "util/include/func_test_util.hpp"
 #include "util/include/util.hpp"
 
