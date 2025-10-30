@@ -2,26 +2,22 @@
 
 #include <mpi.h>
 
+#include <cstdint>
+
 namespace guseva_a_matrix_sums {
 
-GusevaAMatrixSumsMPI::GusevaAMatrixSumsMPI(const InType &in) : rank_(0) {
+GusevaAMatrixSumsMPI::GusevaAMatrixSumsMPI(const InType &in) {
   SetTypeOfTask(GetStaticTypeOfTask());
   GetInput() = in;
   GetOutput() = {};
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
 }
 
 bool GusevaAMatrixSumsMPI::ValidationImpl() {
-  return (rank_ != 0) || ((static_cast<uint64_t>(std::get<0>(GetInput())) * std::get<1>(GetInput()) ==
-                           std::get<2>(GetInput()).size()) &&
-                          (GetOutput().empty()));
+  return (static_cast<uint64_t>(std::get<0>(GetInput())) * std::get<1>(GetInput()) == std::get<2>(GetInput()).size()) &&
+         (GetOutput().empty());
 }
 
 bool GusevaAMatrixSumsMPI::PreProcessingImpl() {
-  if (rank_ != 0) {
-    return true;
-  }
-
   GetOutput().clear();
   GetOutput().resize(std::get<1>(GetInput()), 0.0);
   return true;
@@ -32,10 +28,12 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
   uint32_t columns = 0;
   std::vector<double> matrix;
   int wsize = 0;
+  int rank = 0;
 
   MPI_Comm_size(MPI_COMM_WORLD, &wsize);
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  if (rank_ == 0) {
+  if (rank == 0) {
     rows = std::get<0>(GetInput());
     columns = std::get<1>(GetInput());
     matrix = std::get<2>(GetInput());
@@ -51,7 +49,7 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
   std::vector<int> counts;
   counts.reserve(wsize);
 
-  if (rank_ == 0) {
+  if (rank == 0) {
     rows = std::get<0>(GetInput());
     columns = std::get<1>(GetInput());
     matrix = std::get<2>(GetInput());
@@ -67,8 +65,8 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
     }
   }
 
-  uint32_t start_row = (rank_ * rows_per_proc) + std::min(static_cast<uint32_t>(rank_), remainder);
-  uint32_t end_row = ((rank_ + 1) * rows_per_proc) + std::min(static_cast<uint32_t>(rank_ + 1), remainder);
+  uint32_t start_row = (rank * rows_per_proc) + std::min(static_cast<uint32_t>(rank), remainder);
+  uint32_t end_row = ((rank + 1) * rows_per_proc) + std::min(static_cast<uint32_t>(rank + 1), remainder);
 
   uint32_t start_pos = start_row * columns;
   uint32_t end_pos = end_row * columns;

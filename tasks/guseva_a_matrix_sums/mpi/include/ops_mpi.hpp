@@ -17,8 +17,6 @@ class GusevaAMatrixSumsMPI : public BaseTask {
   bool PreProcessingImpl() override;
   bool RunImpl() override;
   bool PostProcessingImpl() override;
-
-  int rank_;
 };
 
 }  // namespace guseva_a_matrix_sums
