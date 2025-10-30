@@ -2,8 +2,6 @@
 
 #include <mpi.h>
 
-#include "util/include/util.hpp"
-
 namespace guseva_a_matrix_sums {
 
 GusevaAMatrixSumsMPI::GusevaAMatrixSumsMPI(const InType &in) : rank_(0) {

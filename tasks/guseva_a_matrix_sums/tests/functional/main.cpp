@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
-#include <mpi.h>
 #include <stb/stb_image.h>
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
+#include <fstream>
 #include <string>
 
 #include "guseva_a_matrix_sums/common/include/common.hpp"
