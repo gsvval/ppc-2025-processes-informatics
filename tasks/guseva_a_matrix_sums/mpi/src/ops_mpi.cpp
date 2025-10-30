@@ -2,6 +2,8 @@
 
 #include <mpi.h>
 
+#include "util/include/util.hpp"
+
 namespace guseva_a_matrix_sums {
 
 GusevaAMatrixSumsMPI::GusevaAMatrixSumsMPI(const InType &in) : rank_(0) {
@@ -31,9 +33,9 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
   uint32_t rows = 0;
   uint32_t columns = 0;
   std::vector<double> matrix;
-  int wsize = 0;
+  int wsize = ppc::util::GetNumProc();
 
-  MPI_Comm_size(MPI_COMM_WORLD, &wsize);
+  // MPI_Comm_size(MPI_COMM_WORLD, &wsize);
 
   if (rank_ == 0) {
     rows = std::get<0>(GetInput());
