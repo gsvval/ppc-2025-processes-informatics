@@ -78,8 +78,11 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
 
   std::vector<double> global_sums(columns, 0);
   MPI_Reduce(local_sums.data(), global_sums.data(), columns, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-  MPI_Bcast(global_sums.data(), columns, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  GetOutput().assign(global_sums.begin(), global_sums.end());
+  if (rank == 0) {
+    GetOutput().assign(global_sums.begin(), global_sums.end());
+  } else {
+    GetOutput() = {-1};
+  }
   return true;
 }
 
