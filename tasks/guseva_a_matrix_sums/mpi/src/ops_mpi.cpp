@@ -24,8 +24,8 @@ bool GusevaAMatrixSumsMPI::PreProcessingImpl() {
 }
 
 bool GusevaAMatrixSumsMPI::RunImpl() {
-  uint32_t rows = 0;
-  uint32_t columns = 0;
+  int rows = 0;
+  int columns = 0;
   std::vector<double> matrix;
   int wsize = 0;
   int rank = 0;
@@ -34,8 +34,8 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   if (rank == 0) {
-    rows = std::get<0>(GetInput());
-    columns = std::get<1>(GetInput());
+    rows = static_cast<int>(std::get<0>(GetInput()));
+    columns = static_cast<int>(std::get<1>(GetInput()));
     matrix = std::get<2>(GetInput());
   }
 
@@ -50,9 +50,6 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
   counts.reserve(wsize);
 
   if (rank == 0) {
-    rows = std::get<0>(GetInput());
-    columns = std::get<1>(GetInput());
-    matrix = std::get<2>(GetInput());
     for (int rnk = 0; rnk < wsize; rnk++) {
       uint32_t start_row = (rnk * rows_per_proc) + std::min(static_cast<uint32_t>(rnk), remainder);
       uint32_t end_row = ((rnk + 1) * rows_per_proc) + std::min(static_cast<uint32_t>(rnk + 1), remainder);
@@ -80,8 +77,8 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
   }
 
   std::vector<double> global_sums(columns, 0);
-  MPI_Reduce(local_sums.data(), global_sums.data(), static_cast<int>(columns), MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-  MPI_Bcast(global_sums.data(), static_cast<int>(columns), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  MPI_Reduce(local_sums.data(), global_sums.data(), columns, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+  MPI_Bcast(global_sums.data(), columns, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   GetOutput().assign(global_sums.begin(), global_sums.end());
   return true;
 }
