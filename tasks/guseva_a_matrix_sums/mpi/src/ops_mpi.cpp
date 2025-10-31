@@ -72,8 +72,8 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
   uint32_t end_pos = end_row * columns;
 
   std::vector<double> slice(end_pos - start_pos, 0);
-  MPI_Scatterv(matrix.data(), counts.data(), displs.data(), MPI_DOUBLE, slice.data(),
-               counts[rank], MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  MPI_Scatterv(matrix.data(), counts.data(), displs.data(), MPI_DOUBLE, slice.data(), counts[rank], MPI_DOUBLE, 0,
+               MPI_COMM_WORLD);
   std::vector<double> local_sums(columns, 0);
   for (uint32_t i = 0; i < end_pos - start_pos; i++) {
     local_sums[i % columns] += slice[i];
