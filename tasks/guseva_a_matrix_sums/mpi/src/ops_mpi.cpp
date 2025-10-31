@@ -45,11 +45,15 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
   uint32_t rows_per_proc = rows / wsize;
   uint32_t remainder = rows % wsize;
 
-  std::vector<int> displs(wsize, 0);
+  std::vector<int> displs;
+  displs.reserve(wsize);
+  //(wsize, 0);
   std::vector<int> counts;
   counts.reserve(wsize);
+  //(wsize, 0);
 
   if (rank == 0) {
+    displs = std::vector<int>(wsize, 0);
     for (int rnk = 0; rnk < wsize; rnk++) {
       uint32_t start_row = (rnk * rows_per_proc) + std::min(static_cast<uint32_t>(rnk), remainder);
       uint32_t end_row = ((rnk + 1) * rows_per_proc) + std::min(static_cast<uint32_t>(rnk + 1), remainder);
@@ -62,8 +66,8 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
     }
   }
 
-  MPI_Bcast(counts.data(), static_cast<int>(counts.size()), MPI_INT, 0, MPI_COMM_WORLD);
-  MPI_Bcast(displs.data(), static_cast<int>(displs.size()), MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Bcast(counts.data(), wsize, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Bcast(displs.data(), wsize, MPI_INT, 0, MPI_COMM_WORLD);
 
   uint32_t start_row = (rank * rows_per_proc) + std::min(static_cast<uint32_t>(rank), remainder);
   uint32_t end_row = ((rank + 1) * rows_per_proc) + std::min(static_cast<uint32_t>(rank + 1), remainder);
