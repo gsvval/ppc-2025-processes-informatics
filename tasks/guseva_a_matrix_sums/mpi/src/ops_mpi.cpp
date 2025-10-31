@@ -62,6 +62,9 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
     }
   }
 
+  MPI_Bcast(counts.data(), static_cast<int>(counts.size()), MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Bcast(displs.data(), static_cast<int>(displs.size()), MPI_INT, 0, MPI_COMM_WORLD);
+
   uint32_t start_row = (rank * rows_per_proc) + std::min(static_cast<uint32_t>(rank), remainder);
   uint32_t end_row = ((rank + 1) * rows_per_proc) + std::min(static_cast<uint32_t>(rank + 1), remainder);
 
@@ -70,7 +73,7 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
 
   std::vector<double> slice(end_pos - start_pos, 0);
   MPI_Scatterv(matrix.data(), counts.data(), displs.data(), MPI_DOUBLE, slice.data(),
-               static_cast<int>(end_pos - start_pos), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+               counts[rank], MPI_DOUBLE, 0, MPI_COMM_WORLD);
   std::vector<double> local_sums(columns, 0);
   for (uint32_t i = 0; i < end_pos - start_pos; i++) {
     local_sums[i % columns] += slice[i];
