@@ -66,9 +66,6 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
     }
   }
 
-  MPI_Bcast(counts.data(), wsize, MPI_INT, 0, MPI_COMM_WORLD);
-  MPI_Bcast(displs.data(), wsize, MPI_INT, 0, MPI_COMM_WORLD);
-
   int local_count = 0;
   int local_displ = 0;
 
