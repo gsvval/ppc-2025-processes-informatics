@@ -87,12 +87,12 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
 }
 
 bool GusevaAMatrixSumsMPI::PostProcessingImpl() {
-  // int flag = -1;
-  // MPI_Status status;
-  // MPI_Barrier(MPI_COMM_WORLD);
-  // MPI_Iprobe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status);
+  int flag = -1;
+  MPI_Status status;
+  MPI_Barrier(MPI_COMM_WORLD);
+  MPI_Iprobe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status);
 
-  // std::print(std::cout, "\n\n Flag is {}. (should be zero if empty)\n\n", flag);
+  std::print(std::cout, "\n\n Flag is {}. (should be zero if empty)\n\n", flag);
   return true;
 }
 
