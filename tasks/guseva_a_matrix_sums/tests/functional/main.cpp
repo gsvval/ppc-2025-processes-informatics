@@ -97,7 +97,11 @@ inline const auto kGtestValues = ppc::util::ExpandToValues(kTestTasksList);
 
 inline const auto kPerfTestName = GusevaARunFuncTestsProcesses::PrintFuncTestName<GusevaARunFuncTestsProcesses>;
 
+namespace {
+
 INSTANTIATE_TEST_SUITE_P(GusevaAMatrix, GusevaARunFuncTestsProcesses, kGtestValues, kPerfTestName);
+
+}  // namespace
 
 }  // namespace
 
