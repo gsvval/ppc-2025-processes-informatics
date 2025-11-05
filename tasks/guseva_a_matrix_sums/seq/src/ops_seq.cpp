@@ -1,5 +1,9 @@
 #include "guseva_a_matrix_sums/seq/include/ops_seq.hpp"
 
+#include <cstdint>
+
+#include "guseva_a_matrix_sums/common/include/common.hpp"
+
 namespace guseva_a_matrix_sums {
 
 GusevaAMatrixSumsSEQ::GusevaAMatrixSumsSEQ(const InType &in) {

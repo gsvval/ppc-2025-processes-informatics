@@ -3,6 +3,9 @@
 #include <mpi.h>
 
 #include <cstdint>
+#include <vector>
+
+#include "guseva_a_matrix_sums/common/include/common.hpp"
 
 namespace guseva_a_matrix_sums {
 

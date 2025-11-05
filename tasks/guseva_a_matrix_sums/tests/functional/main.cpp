@@ -2,18 +2,19 @@
 #include <stb/stb_image.h>
 
 #include <array>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <fstream>
 #include <string>
+#include <tuple>
+#include <vector>
 
 #include "guseva_a_matrix_sums/common/include/common.hpp"
 #include "guseva_a_matrix_sums/mpi/include/ops_mpi.hpp"
 #include "guseva_a_matrix_sums/seq/include/ops_seq.hpp"
 #include "util/include/func_test_util.hpp"
 #include "util/include/util.hpp"
-
-#define EPSILON 10e-12
 
 namespace guseva_a_matrix_sums {
 
@@ -62,7 +63,7 @@ class GusevaARunFuncTestsProcesses : public ppc::util::BaseRunFuncTests<InType, 
       return false;
     }
     for (uint32_t i = 0; i < expected_data_.size(); i++) {
-      if (std::abs(output_data[i] - expected_data_[i]) > EPSILON) {
+      if (std::abs(output_data[i] - expected_data_[i]) > kEpsilon) {
         return false;
       }
     }
