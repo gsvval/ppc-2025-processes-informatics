@@ -78,11 +78,8 @@ inline const auto kGtestValues = ppc::util::TupleToGTestValues(kAllPerfTasks);
 
 inline const auto kPerfTestName = GusevaAMatrixSumsRunPerfTestProcesses::CustomPerfTestName;
 
-namespace {
-
+// NOLINTNEXTLINE
 INSTANTIATE_TEST_SUITE_P(GusevaPerf, GusevaAMatrixSumsRunPerfTestProcesses, kGtestValues, kPerfTestName);
-
-}  // namespace
 
 }  // namespace
 
