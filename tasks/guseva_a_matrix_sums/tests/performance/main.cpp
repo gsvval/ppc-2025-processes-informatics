@@ -1,16 +1,16 @@
 #include <gtest/gtest.h>
 
+#include <cmath>
 #include <cstdint>
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include "guseva_a_matrix_sums/common/include/common.hpp"
 #include "guseva_a_matrix_sums/mpi/include/ops_mpi.hpp"
 #include "guseva_a_matrix_sums/seq/include/ops_seq.hpp"
 #include "util/include/perf_test_util.hpp"
 #include "util/include/util.hpp"
-
-#define EPSILON 10e-12
 
 namespace guseva_a_matrix_sums {
 
@@ -53,7 +53,7 @@ class GusevaAMatrixSumsRunPerfTestProcesses : public ppc::util::BaseRunPerfTests
       return false;
     }
     for (uint32_t i = 0; i < expected_data_.size(); i++) {
-      if (std::abs(output_data[i] - expected_data_[i]) > EPSILON) {
+      if (std::abs(output_data[i] - expected_data_[i]) > kEpsilon) {
         return false;
       }
     }
@@ -65,6 +65,8 @@ class GusevaAMatrixSumsRunPerfTestProcesses : public ppc::util::BaseRunPerfTests
   }
 };
 
+namespace {
+
 TEST_P(GusevaAMatrixSumsRunPerfTestProcesses, RunPerfModes) {
   ExecuteTest(GetParam());
 }
@@ -72,10 +74,12 @@ TEST_P(GusevaAMatrixSumsRunPerfTestProcesses, RunPerfModes) {
 const auto kAllPerfTasks =
     ppc::util::MakeAllPerfTasks<InType, GusevaAMatrixSumsMPI, GusevaAMatrixSumsSEQ>(PPC_SETTINGS_guseva_a_matrix_sums);
 
-const auto kGtestValues = ppc::util::TupleToGTestValues(kAllPerfTasks);
+inline const auto kGtestValues = ppc::util::TupleToGTestValues(kAllPerfTasks);
 
-const auto kPerfTestName = GusevaAMatrixSumsRunPerfTestProcesses::CustomPerfTestName;
+inline const auto kPerfTestName = GusevaAMatrixSumsRunPerfTestProcesses::CustomPerfTestName;
 
 INSTANTIATE_TEST_SUITE_P(GusevaPerf, GusevaAMatrixSumsRunPerfTestProcesses, kGtestValues, kPerfTestName);
+
+}  // namespace
 
 }  // namespace guseva_a_matrix_sums

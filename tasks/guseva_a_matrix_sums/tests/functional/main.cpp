@@ -93,9 +93,9 @@ const auto kTestTasksList = std::tuple_cat(ppc::util::AddFuncTask<guseva_a_matri
                                            ppc::util::AddFuncTask<guseva_a_matrix_sums::GusevaAMatrixSumsSEQ, InType>(
                                                kTestParam, PPC_SETTINGS_guseva_a_matrix_sums));
 
-const auto kGtestValues = ppc::util::ExpandToValues(kTestTasksList);
+inline const auto kGtestValues = ppc::util::ExpandToValues(kTestTasksList);
 
-const auto kPerfTestName = GusevaARunFuncTestsProcesses::PrintFuncTestName<GusevaARunFuncTestsProcesses>;
+inline const auto kPerfTestName = GusevaARunFuncTestsProcesses::PrintFuncTestName<GusevaARunFuncTestsProcesses>;
 
 INSTANTIATE_TEST_SUITE_P(GusevaAMatrix, GusevaARunFuncTestsProcesses, kGtestValues, kPerfTestName);
 
