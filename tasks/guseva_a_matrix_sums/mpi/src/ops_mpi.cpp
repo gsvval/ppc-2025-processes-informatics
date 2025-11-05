@@ -3,7 +3,6 @@
 #include <mpi.h>
 
 #include <cstdint>
-#include <numeric>
 
 namespace guseva_a_matrix_sums {
 
