@@ -54,6 +54,7 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
   }
   int local_count = counts[rank];
   std::vector<double> local_matrix(local_count, 0);
+
   MPI_Scatterv(matrix.data(), counts.data(), displs.data(), MPI_DOUBLE, local_matrix.data(), local_count, MPI_DOUBLE, 0,
                MPI_COMM_WORLD);
 
