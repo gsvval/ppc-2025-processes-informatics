@@ -22,7 +22,6 @@ bool GusevaAMatrixSumsMPI::ValidationImpl() {
 
 bool GusevaAMatrixSumsMPI::PreProcessingImpl() {
   GetOutput().clear();
-  GetOutput().resize(std::get<1>(GetInput()), 0.0);
   return true;
 }
 
@@ -39,7 +38,7 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
   MPI_Bcast(&rows, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast(&columns, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-  std::vector<double> matrix(static_cast<int64_t>(rows) * columns, 0);
+  std::vector<double> matrix(static_cast<int64_t>(rows) * columns, 0.0);
   if (rank == 0) {
     matrix = std::get<2>(GetInput());
   }
