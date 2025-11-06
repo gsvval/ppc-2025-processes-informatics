@@ -37,39 +37,55 @@ bool GusevaAMatrixSumsMPI::RunImpl() {
 
   MPI_Bcast(&rows, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast(&columns, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  int size = rows * columns;
 
-  std::vector<double> matrix(static_cast<int64_t>(rows) * columns, 0.0);
+  int elems_per_proc = size / wsize;
+  int remainder = size % wsize;
+
+  std::vector<int> counts(wsize, 0);
+  std::vector<int> displs(wsize, 0);
+
+  int displ = 0;
+  int shift = 0;
+  int total = 0;
+
+  for (int proc = 0; proc < wsize; proc++) {
+    counts[proc] = elems_per_proc + (proc < remainder ? 1 : 0);
+    displs[proc] = displ;
+    displ += counts[proc];
+    if (rank == proc) {
+      shift = total % columns;
+    }
+    total += counts[proc];
+  }
+
+  std::vector<double> matrix(size, 0);
+
   if (rank == 0) {
     matrix = std::get<2>(GetInput());
   }
 
-  int rows_per_proc = rows / wsize;
-  int remainder = rows % wsize;
-  std::vector<int> counts(wsize, 0);
-  std::vector<int> displs(wsize, 0);
-  int displ = 0;
-  for (int proc = 0; proc < wsize; proc++) {
-    counts[proc] = (rows_per_proc + (proc < remainder ? 1 : 0)) * columns;
-    displs[proc] = displ;
-    displ += counts[proc];
-  }
-  int local_count = counts[rank];
-  std::vector<double> local_matrix(local_count, 0);
+  std::vector<double> local_buff(counts[rank], 0);
 
-  MPI_Scatterv(matrix.data(), counts.data(), displs.data(), MPI_DOUBLE, local_matrix.data(), local_count, MPI_DOUBLE, 0,
+  MPI_Scatterv(matrix.data(), counts.data(), displs.data(), MPI_DOUBLE, local_buff.data(), counts[rank], MPI_DOUBLE, 0,
                MPI_COMM_WORLD);
 
   std::vector<double> local_sums(columns, 0.0);
-  for (int i = 0; i < local_count; i++) {
-    local_sums[i % columns] += local_matrix[i];
+
+  for (int i = 0; i < counts[rank]; i++) {
+    local_sums[(i + shift) % columns] += local_buff[i];
   }
+
   std::vector<double> global_sums(columns, 0.0);
+
   MPI_Reduce(local_sums.data(), global_sums.data(), columns, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
-  GetOutput() = {-1};
   if (rank == 0) {
     GetOutput() = global_sums;
+  } else {
+    GetOutput() = {-1};
   }
+
   return true;
 }
 
